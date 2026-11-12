@@ -1,131 +1,76 @@
 ---
 name: commit
-description: Create commit messages following Sentry conventions. Use when committing code changes, writing commit messages, or formatting git history. Follows conventional commits with Sentry-specific issue references.
+description: Write clear, accurate Git commit messages and create well-scoped commits. Use when committing changes or preparing commit messages, including Conventional Commit conventions and project-specific rules.
 ---
 
-# Sentry Commit Messages
+# Git Commit Messages
 
-Follow these conventions when creating commits for Sentry projects.
+Create commit messages that explain the purpose of a change and keep history easy to scan and review.
 
-## Format
+## Before committing
 
-```
-<type>(<scope>): <subject>
+1. Inspect repository state with `git status --short`.
+2. Review staged and unstaged changes separately.
+3. Confirm which files belong in the commit.
+4. Check for secrets, generated files, accidental debug output, and unrelated edits.
+5. Do not stage or commit files outside the user's intended scope.
 
-<body>
+## Message format
 
-<footer>
-```
+Use the repository's established convention. When no convention exists, use:
 
-The header is required. Scope is optional. All lines must stay under 100 characters.
+```text
+type(scope): imperative summary
 
-## Commit Types
+Explain why the change is needed and any important context.
 
-| Type | Purpose |
-|------|---------|
-| `feat` | New feature |
-| `fix` | Bug fix |
-| `ref` | Refactoring (no behavior change) |
-| `perf` | Performance improvement |
-| `docs` | Documentation only |
-| `test` | Test additions or corrections |
-| `build` | Build system or dependencies |
-| `ci` | CI configuration |
-| `chore` | Maintenance tasks |
-| `style` | Code formatting (no logic change) |
-| `meta` | Repository metadata |
-| `license` | License changes |
-
-## Subject Line Rules
-
-- Use imperative, present tense: "Add feature" not "Added feature"
-- Capitalize the first letter
-- No period at the end
-- Maximum 70 characters
-
-## Body Guidelines
-
-- Explain **what** and **why**, not how
-- Use imperative mood and present tense
-- Include motivation for the change
-- Contrast with previous behavior when relevant
-
-## Footer: Issue References
-
-Reference issues in the footer using these patterns:
-
-```
-Fixes GH-1234
-Fixes #1234
-Fixes SENTRY-1234
-Refs LINEAR-ABC-123
+Refs: #123
 ```
 
-- `Fixes` closes the issue when merged
-- `Refs` links without closing
+Common types:
+- `feat`: add functionality.
+- `fix`: correct incorrect behavior.
+- `refactor`: restructure without changing behavior.
+- `perf`: improve performance.
+- `docs`: documentation-only change.
+- `test`: add or update tests.
+- `build`: build system or dependency changes.
+- `ci`: automation and pipeline changes.
+- `chore`: maintenance tasks.
+
+## Subject rules
+
+- Use imperative language.
+- Describe the main outcome, not every implementation detail.
+- Avoid trailing punctuation.
+- Keep the subject concise, ideally within 50 to 72 characters.
+- Add a scope only when it improves clarity.
+- Follow any stricter repository-specific limit.
+
+## Body and footer
+
+Use the body to explain motivation, trade-offs, and relevant context. Wrap long lines sensibly. Add issue references only when they are real and supplied or verifiable. Use breaking-change footers when public compatibility changes.
+
+## Sentry-specific repositories
+
+When working in a Sentry repository, follow its current contribution and commit-message conventions. Do not assume a Sentry-specific type or issue format applies to unrelated repositories.
+
+## Commit workflow
+
+- Present the proposed commit message before committing when user approval is required.
+- Commit only the reviewed staged diff.
+- Verify the resulting commit with `git log -1 --oneline` and `git status --short`.
+- Do not amend, force-push, or rewrite shared history without explicit instruction.
 
 ## Examples
 
-### Simple fix
+```text
+fix(auth): reject expired refresh tokens
 
-```
-fix(api): Handle null response in user endpoint
-
-The user API could return null for deleted accounts, causing a crash
-in the dashboard. Add null check before accessing user properties.
-
-Fixes SENTRY-5678
+Expired refresh tokens were accepted by one renewal path. Apply the
+same expiry check used by the other authentication endpoints.
 ```
 
-### Feature with scope
-
+```text
+docs: clarify local development setup
 ```
-feat(alerts): Add Slack thread replies for alert updates
-
-When an alert is updated or resolved, post a reply to the original
-Slack thread instead of creating a new message. This keeps related
-notifications grouped together.
-
-Refs GH-1234
-```
-
-### Refactor
-
-```
-ref: Extract common validation logic to shared module
-
-Move duplicate validation code from three endpoints into a shared
-validator class. No behavior change.
-```
-
-### Breaking change
-
-```
-feat(api)!: Remove deprecated v1 endpoints
-
-Remove all v1 API endpoints that were deprecated in version 23.1.
-Clients should migrate to v2 endpoints.
-
-BREAKING CHANGE: v1 endpoints no longer available
-Fixes SENTRY-9999
-```
-
-## Revert Format
-
-```
-revert: feat(api): Add new endpoint
-
-This reverts commit abc123def456.
-
-Reason: Caused performance regression in production.
-```
-
-## Principles
-
-- Each commit should be a single, stable change
-- Commits should be independently reviewable
-- The repository should be in a working state after each commit
-
-## References
-
-- [Sentry Commit Messages](https://develop.sentry.dev/engineering-practices/commit-messages/)
