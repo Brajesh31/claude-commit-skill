@@ -18,3 +18,7 @@ Use when preparing commit messages or committing changes. Follow the repository'
 ## Safety
 
 Review staged contents before committing. Do not include secrets, unrelated changes, or unreviewed files. Avoid amending or rewriting shared history without explicit approval.
+
+## Creator and maintainer
+
+Created and maintained by **Brajesh Kumar**.
